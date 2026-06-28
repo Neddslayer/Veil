@@ -35,7 +35,7 @@ public record CompositeRenderTypeData(VertexFormat format, VertexFormat.Mode mod
             VertexFormatCodec.CODEC.fieldOf("format").forGetter(CompositeRenderTypeData::format),
             VertexFormatCodec.MODE_CODEC.fieldOf("mode").forGetter(CompositeRenderTypeData::mode),
             VertexFormatCodec.BUFFER_SIZE_CODEC.fieldOf("bufferSize").forGetter(CompositeRenderTypeData::bufferSize),
-            Codec.BOOL.optionalFieldOf("affectsCrumbling", false).forGetter(CompositeRenderTypeData::sort),
+            Codec.BOOL.optionalFieldOf("affectsCrumbling", false).forGetter(CompositeRenderTypeData::affectsCrumbling),
             Codec.BOOL.optionalFieldOf("sort", false).forGetter(CompositeRenderTypeData::sort),
             Codec.BOOL.optionalFieldOf("outline", false).forGetter(CompositeRenderTypeData::outline),
             LAYER_CODEC.fieldOf("layers").forGetter(state -> state.layers().stream().map(Arrays::asList).toList())

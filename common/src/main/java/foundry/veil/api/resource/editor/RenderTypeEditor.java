@@ -8,7 +8,9 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import foundry.veil.Veil;
+import foundry.veil.api.client.editor.EditorAttributeProvider;
 import foundry.veil.api.client.imgui.VeilImGuiUtil;
+import foundry.veil.api.client.registry.RenderTypeLayerRegistry;
 import foundry.veil.api.client.render.rendertype.layer.CompositeRenderTypeData;
 import foundry.veil.api.client.render.rendertype.layer.RenderTypeLayer;
 import foundry.veil.api.client.util.VertexFormatCodec;
@@ -23,6 +25,7 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +36,7 @@ import java.util.Map;
 
 public class RenderTypeEditor implements ResourceFileEditor<RenderTypeResource> {
 
-    private static final Component TITLE = Component.translatable("inspector.veil.render_type.title");
+    private static final Component TITLE = Component.literal("Render Type Editor");
     private final ImBoolean open;
     private final VeilResourceManager resourceManager;
     private final RenderTypeResource resource;
@@ -115,6 +118,26 @@ public class RenderTypeEditor implements ResourceFileEditor<RenderTypeResource> 
             ImGui.separator();
 
             ImGui.text("Layers");
+            for (int i = 0; i < this.renderType.getLayers().size(); i++) {
+                ImGui.pushID(i);
+                ImGui.indent();
+
+                for (int j = 0; j < this.renderType.getLayers().get(i).size(); j++) {
+                    RenderTypeLayer layer = this.renderType.getLayers().get(i).get(j);
+
+                    List<String> keySet = RenderTypeLayerRegistry.REGISTRY.entrySet().stream().map(e -> e.getKey().location().toString()).toList();
+                    List<? extends RenderTypeLayerRegistry.LayerType<?>> valueSet = RenderTypeLayerRegistry.REGISTRY.entrySet().stream().map(Map.Entry::getValue).toList();
+                    String name = keySet.get(valueSet.indexOf(layer.getType()));
+                    if (ImGui.collapsingHeader(name)) {
+                        if (layer instanceof EditorAttributeProvider) {
+                            ((EditorAttributeProvider) layer).renderImGuiAttributes();
+                        }
+                    }
+                }
+
+                ImGui.unindent();
+                ImGui.popID();
+            }
         }
         ImGui.end();
     }
@@ -243,7 +266,9 @@ public class RenderTypeEditor implements ResourceFileEditor<RenderTypeResource> 
         }
 
         public CompositeRenderTypeData build() {
-            return new CompositeRenderTypeData(this.format, this.mode, this.bufferSize, this.affectsCrumbling, this.sort, this.outline, this.layers.stream().map(list -> list.toArray(RenderTypeLayer[]::new)).toList());
+            List<List<RenderTypeLayer>> builtLayers = new ArrayList<>(this.layers);
+            if (builtLayers.size() == 1) builtLayers.add(new ArrayList<>());
+            return new CompositeRenderTypeData(this.format, this.mode, this.bufferSize, this.affectsCrumbling, this.sort, this.outline, builtLayers.stream().map(list -> list.toArray(RenderTypeLayer[]::new)).toList());
         }
     }
 }
