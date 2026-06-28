@@ -24,6 +24,7 @@ public final class VeilResourceEditorRegistry {
     public static final RegistryObject<ResourceFileEditor.Factory<FramebufferResource>> FRAMEBUFFER = VANILLA_PROVIDER.register("framebuffer", () -> FramebufferFileEditor::new);
     public static final RegistryObject<ResourceFileEditor.Factory<ShellResource>> SHELL = VANILLA_PROVIDER.register("flare_shell", () -> ShellInspector::new);
     public static final RegistryObject<ResourceFileEditor.Factory<FlareResource>> EFFECT = VANILLA_PROVIDER.register("flare_effect", () -> EffectInspector::new);
+    public static final RegistryObject<ResourceFileEditor.Factory<RenderTypeResource>> RENDER_TYPE = VANILLA_PROVIDER.register("render_type", () -> RenderTypeEditor::new);
 
     public static final RegistryObject<ResourceOverrideEditor.Factory<VeilResource<?>>> OVERRIDE = VANILLA_PROVIDER.register("override", () -> ResourceOverrideEditor::new);
 

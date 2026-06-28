@@ -4,6 +4,7 @@ import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.resource.VeilResourceAction;
 import foundry.veil.api.resource.VeilResourceInfo;
 import foundry.veil.api.resource.VeilResourceManager;
+import foundry.veil.impl.resource.action.RenderTypeInspectAction;
 import foundry.veil.impl.resource.action.TextEditAction;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,7 @@ public record RenderTypeResource(VeilResourceInfo resourceInfo) implements VeilT
 
     @Override
     public List<VeilResourceAction<RenderTypeResource>> getActions() {
-        return List.of(new TextEditAction<>());
+        return List.of(new TextEditAction<>(), new RenderTypeInspectAction<>());
     }
 
     @Override
